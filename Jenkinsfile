@@ -16,7 +16,7 @@ pipeline {
           node -v
           npm -v
           npm ci
-          npm run build
+          npm run buildư
           ls -la
         '''
 
@@ -33,5 +33,26 @@ pipeline {
         sh 'test -d .next && echo "Next.js build succeeded!"'
       }
     }
+     stage('Deploy to Vercel') {
+      agent {
+          docker {
+              image 'node:18-alpine' 
+              reuseNode true
+          }
+      }
+      environment {
+          VERCEL_TOKEN = credentials('vercel-token')
+      }
+      steps {
+        sh '''
+          # Cài đặt Vercel CLI
+          npm install -g vercel
+          
+          # Deploy lên Vercel
+          vercel --token ${VERCEL_TOKEN} --prod --confirm
+        '''
+      }
+    }
   }
 }
+
