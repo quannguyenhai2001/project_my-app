@@ -46,7 +46,7 @@ pipeline {
       steps {
         sh '''
           # Cài đặt Vercel CLI
-          npm install -g vercel
+          npm install  vercel
           
           # Deploy lên Vercel
           vercel --token ${VERCEL_TOKEN} --prod --confirm
