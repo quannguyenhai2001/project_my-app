@@ -44,7 +44,7 @@ export default function Home() {
         />
 
         <div className="w-full p-6 rounded-lg border border-black/[.08] dark:border-white/[.145] bg-white dark:bg-black/20">
-          <h2 className="text-xl font-bold mb-4">Google Gemini AI Demo</h2>
+          <h2 className="text-xl font-bold mb-4">Google Gemini AI Demo 2</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <textarea
