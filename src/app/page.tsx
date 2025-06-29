@@ -1,9 +1,39 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default function Home() {
+  const [query, setQuery] = useState<string>("");
+  const [result, setResult] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const genAI = new GoogleGenerativeAI(
+        "AIzaSyDgD-v3Psx318qnOswWpB2AdW8vpcN6Evg"
+      );
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      const result = await model.generateContent(query);
+      const text = result.response.text();
+
+      setResult(text);
+    } catch (error) {
+      console.error("Error:", error);
+      setResult("An error occurred while fetching the response.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  console.log("GoogleGenerativeAI:", result);
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+      <main className="flex flex-col gap-[32px] row-start-2 items-center w-full max-w-3xl">
         <Image
           className="dark:invert"
           src="/next.svg"
@@ -12,18 +42,41 @@ export default function Home() {
           height={38}
           priority
         />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+
+        <div className="w-full p-6 rounded-lg border border-black/[.08] dark:border-white/[.145] bg-white dark:bg-black/20">
+          <h2 className="text-xl font-bold mb-4">Google Gemini AI Demo</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <textarea
+                className="w-full p-3 rounded-md border border-black/[.15] dark:border-white/[.15] bg-transparent"
+                rows={3}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Ask Gemini AI something..."
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading || !query.trim()}
+              className={`rounded-full border border-solid transition-colors flex items-center justify-center gap-2 font-medium px-5 py-2 ${
+                loading || !query.trim()
+                  ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                  : "bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc]"
+              }`}
+            >
+              {loading ? "Processing..." : "Generate Response"}
+            </button>
+          </form>
+
+          {result && (
+            <div className="mt-6 p-4 bg-black/[.03] dark:bg-white/[.03] rounded-md">
+              <h3 className="font-semibold mb-2">Response:</h3>
+              <div className="whitespace-pre-wrap font-[family-name:var(--font-geist-mono)] text-sm">
+                {result}
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
