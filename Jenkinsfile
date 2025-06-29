@@ -49,7 +49,7 @@ pipeline {
           npm install  vercel
           
           # Deploy lên Vercel
-          vercel --token ${VERCEL_TOKEN} --prod --confirm
+          npx vercel --token ${VERCEL_TOKEN} --prod --confirm
         '''
       }
     }
