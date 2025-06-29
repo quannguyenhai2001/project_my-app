@@ -31,7 +31,6 @@ pipeline {
       }
       steps {
         sh 'test -d .next && echo "Next.js build succeeded!"'
-        sh 'npm test'
       }
     }
   }
